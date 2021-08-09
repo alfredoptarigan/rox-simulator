@@ -99,7 +99,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <Head>
         <title>Smelting Simulator Ragnarok X Generations</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.png" />
       </Head>
       <img src="/logo.png" alt="Ragnarok X Logo" width={250} className="mb-5" />
       <h1 className="text-2xl mb-5 font-medium">
