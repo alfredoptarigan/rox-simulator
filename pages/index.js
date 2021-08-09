@@ -1,82 +1,161 @@
-import Head from 'next/head'
+import { useState, useEffect } from "react";
+import Head from "next/head";
+
+const materialSmelting = [
+  {
+    id: "secret_enchancement_stone",
+    name: "Secret Enchancement Stone",
+    type: "Enchance Accessory",
+    staminaCost: 10,
+    "material-needed": [
+      {
+        name: "Muspellium Lv 1",
+        quantity: 15,
+      },
+      {
+        name: "Arcane Flower",
+        quantity: 2,
+      },
+    ],
+  },
+  {
+    id: "toughening_enchancement_stone",
+    name: "Toughening Enchancement Stone",
+    type: "Enchance Armor",
+    staminaCost: 10,
+    "material-needed": [
+      {
+        name: "Muspellium Lv 1",
+        quantity: 15,
+      },
+      {
+        name: "Tough Vine",
+        quantity: 2,
+      },
+    ],
+  },
+];
+
+function SmeltingComponent(props) {
+  const smelting = materialSmelting.find(
+    (items) => items.id === props.material
+  );
+
+  let notification = "";
+  let sisa = "";
+
+  const jumlahStaminaDihabiskan =
+    props.stamina - props.jumlahSmelt * smelting.staminaCost;
+
+  if (jumlahStaminaDihabiskan < 0) {
+    notification = <p className="mb-3">Stamina tidak mencukupi</p>;
+  } else if (jumlahStaminaDihabiskan == 0) {
+    notification = <p className="mb-3">Stamnina Habis</p>;
+    sisa = 0;
+  } else {
+    notification = <p className="mb-3">{jumlahStaminaDihabiskan}</p>;
+    sisa = props.stamina - jumlahStaminaDihabiskan;
+  }
+  return (
+    <div>
+      <label htmlFor="total-material" className="font-medium"></label>
+      <div className="grid grid-cols-2 gap-4 mb-3">
+        {smelting["material-needed"].map((item, i) => (
+          <div key={i}>
+            <div className="font-medium">
+              {item.quantity * props.jumlahSmelt} {item.name}
+            </div>
+          </div>
+        ))}
+      </div>
+      <label htmlFor="jumlah-stamina-dihabiskan" className="font-medium">
+        Jumlah Stamina Dihabiskan
+      </label>
+      {notification}
+      <label htmlFor="material-didapatkan" className="font-medium">
+        Material Didapatkan
+      </label>
+      <p className="mb-3">
+        {props.jumlahSmelt} {smelting.name}
+      </p>
+      <label htmlFor="material-didapatkan" className="font-medium">
+        Sisa Stamina
+      </label>
+      <p className="mb-3">{sisa} Stamina</p>
+    </div>
+  );
+}
 
 export default function Home() {
+  const [stamina, setStamina] = useState(0);
+  const [material, setMaterial] = useState();
+  const [jumlahSmelt, setJumlahSmelt] = useState(0);
+
+  function resetSimulation() {
+    setStamina(0);
+    setJumlahSmelt(0);
+  }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen py-2">
       <Head>
-        <title>Create Next App</title>
+        <title>Smelting Simulator Ragnarok X Generations</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="text-blue-600" href="https://nextjs.org">
-            Next.js!
-          </a>
-        </h1>
-
-        <p className="mt-3 text-2xl">
-          Get started by editing{' '}
-          <code className="p-3 font-mono text-lg bg-gray-100 rounded-md">
-            pages/index.js
-          </code>
-        </p>
-
-        <div className="flex flex-wrap items-center justify-around max-w-4xl mt-6 sm:w-full">
-          <a
-            href="https://nextjs.org/docs"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Documentation &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Find in-depth information about Next.js features and API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Learn &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Learn about Next.js in an interactive course with quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Examples &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Discover and deploy boilerplate example Next.js projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="p-6 mt-6 text-left border w-96 rounded-xl hover:text-blue-600 focus:text-blue-600"
-          >
-            <h3 className="text-2xl font-bold">Deploy &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className="flex items-center justify-center w-full h-24 border-t">
-        <a
-          className="flex items-center justify-center"
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      <img src="/logo.png" alt="Ragnarok X Logo" width={250} className="mb-5" />
+      <h1 className="text-2xl mb-5 font-medium">
+        Ragnarok X Smelting Simulator (Unofficial)
+      </h1>
+      <div className="border border-sky-600 w-96 p-5">
+        <label htmlFor="stamina" className="font-medium ">
+          Stamina
+        </label>
+        <input
+          type="number"
+          id="stamina"
+          className="w-full rounded border border-teal-500 hover:border-teal-600 outline-none mb-3"
+          onChange={(e) => setStamina(e.target.value)}
+        />
+        <label htmlFor="material" className="font-medium ">
+          Material Smelting
+        </label>
+        <select
+          name="material-smelting"
+          id="material"
+          className="w-full outline-none border border-teal-500 rounded mb-3"
+          onChange={(e) => setMaterial(e.target.value)}
         >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="h-4 ml-2" />
-        </a>
-      </footer>
+          {materialSmelting.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+        <label htmlFor="total" className="font-medium">
+          Jumlah Smelting
+        </label>
+        <input
+          type="number"
+          id="smelt"
+          className="w-full rounded border border-teal-500 hover:border-teal-600 outline-none mb-3"
+          onChange={(e) => setJumlahSmelt(e.target.value)}
+        />
+
+        {material !== undefined && jumlahSmelt >= 0 && (
+          <>
+            <SmeltingComponent
+              material={material}
+              stamina={stamina}
+              jumlahSmelt={jumlahSmelt}
+            />
+            <a
+              onClick={resetSimulation}
+              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded"
+            >
+              Reset Simulation
+            </a>
+          </>
+        )}
+      </div>
     </div>
-  )
+  );
 }

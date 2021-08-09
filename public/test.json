@@ -1,0 +1,17 @@
+{
+    "secret_enchancement_stone": {
+      "id": "secret_enchancement_stone",
+      "name": "Secret Enchancement Stone",
+      "type": "Enchance Accessory",
+      "material-needed": {
+          "material-1": {
+            "name": "Muspellium Lv 1",
+            "quantity": 15
+          },
+          "material-2": {
+            "name": "Arcane Flower",
+            "quantity": 2
+          }
+      }
+    }
+}
